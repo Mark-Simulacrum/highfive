@@ -9,7 +9,7 @@ WELCOME_MSG = "Thanks for the pull request, and welcome! The Servo team is excit
 # If the user specified a reviewer, return the username, otherwise returns None.
 def find_reviewer(comment, collaborators):
     reviewer = re.search(r'.*r\?[:\- ]*@([a-zA-Z0-9\-]*)', comment)
-    if reviewer and reviewer.group(1) in collaborators:
+    if reviewer:
         return reviewer.group(1)
     return None
 
@@ -18,11 +18,10 @@ def get_approver(payload, collaborators):
     comment = payload['comment']['body']
     approval = re.search(r'.*@bors-servo[: ]*r([\+=])([a-zA-Z0-9\-]*)', comment)
 
-    if approval and user in collaborators:
+    if approval:
         if approval.group(1) == '=':        # check if it's something like "r=username"
             reviewer = approval.group(2)
-            if reviewer in collaborators:
-                return reviewer
+            return reviewer
         return user         # fall back and assign the approver
     return None
 
